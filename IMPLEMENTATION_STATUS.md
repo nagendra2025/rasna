@@ -49,7 +49,16 @@ Quick reference for what's been completed and what's remaining.
 - [x] Read-only mode for kids
 - [x] API routes (GET, POST, PUT, DELETE)
 
-### 5. Database Schema
+### 5. Announcements (Not Chat) ✅
+
+- [x] Create announcements page
+- [x] Create announcement form
+- [x] List active announcements
+- [x] Auto-expiry handling
+- [x] Delete announcements
+- [x] API routes (GET, POST, DELETE)
+
+### 6. Database Schema
 
 - [x] All 6 tables created
 - [x] RLS policies configured
@@ -58,7 +67,7 @@ Quick reference for what's been completed and what's remaining.
 - [x] Storage bucket for memories
 - [x] Profile auto-creation trigger
 
-### 6. UI Components
+### 7. UI Components
 
 - [x] Navigation bar
 - [x] Landing page
@@ -66,21 +75,13 @@ Quick reference for what's been completed and what's remaining.
 - [x] Calendar page
 - [x] Tasks page
 - [x] Notes page
+- [x] Announcements page
 - [x] Responsive design
 - [x] Family-friendly styling
 
 ---
 
 ## 🚧 Remaining Features (Phase 1)
-
-### 5. Announcements (Not Chat)
-
-- [ ] Create announcements page
-- [ ] Create announcement form
-- [ ] List active announcements
-- [ ] Auto-expiry handling
-- [ ] Delete announcements
-- [ ] API routes
 
 ### 6. Family Memories
 
@@ -102,11 +103,12 @@ Quick reference for what's been completed and what's remaining.
 - **Calendar:** 4 files + 2 API routes
 - **Tasks:** 4 files + 2 API routes
 - **Notes:** 4 files + 2 API routes
+- **Announcements:** 4 files + 2 API routes
 - **Database:** 3 migration files
 - **Components:** 1 navigation component
 - **Configuration:** Multiple config files
 
-### Total Files: ~33 files
+### Total Files: ~41 files
 
 ### Database Tables: 6 tables
 
@@ -114,7 +116,7 @@ Quick reference for what's been completed and what's remaining.
 2. events ✅
 3. tasks ✅
 4. notes ✅
-5. announcements (schema ready, UI pending)
+5. announcements ✅
 6. memories (schema ready, UI pending)
 
 ---
@@ -122,11 +124,11 @@ Quick reference for what's been completed and what's remaining.
 ## 🎯 Next Session Goals
 
 1. ✅ Implement Family Notes feature (COMPLETE)
-2. Implement Announcements feature
+2. ✅ Implement Announcements feature (COMPLETE)
 3. Implement Family Memories feature
 4. Final testing and polish
 
 ---
 
-**Status:** 67% Complete (4 of 6 features done)  
+**Status:** 83% Complete (5 of 6 features done)  
 **Last Updated:** Current Session
