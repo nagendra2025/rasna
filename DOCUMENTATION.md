@@ -1,8 +1,8 @@
 # Rasna - Family Dashboard Documentation
 
-**Version:** Phase 1 (In Progress)  
+**Version:** Phase 1 (Complete)  
 **Last Updated:** Current Session  
-**Status:** Calendar & Tasks Features Complete
+**Status:** All 6 Features Complete ✅
 
 ---
 
@@ -23,6 +23,7 @@
 ## Project Overview
 
 Rasna is a private family dashboard application designed for:
+
 - Daily coordination
 - Family reminders
 - Shared important information
@@ -36,6 +37,7 @@ Rasna is a private family dashboard application designed for:
 ## Technology Stack
 
 ### Frontend
+
 - **Framework:** Next.js 15 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
@@ -43,12 +45,14 @@ Rasna is a private family dashboard application designed for:
 - **UI Components:** Custom components with family-friendly design
 
 ### Backend
+
 - **Database:** Supabase (PostgreSQL)
 - **Authentication:** Supabase Auth
 - **Storage:** Supabase Storage (for memories/photos)
 - **API:** Next.js API Routes
 
 ### Deployment
+
 - **Platform:** Vercel (planned)
 - **Domain:** rasna.com (Phase 2)
 
@@ -111,11 +115,13 @@ rasna/
 ## Setup Instructions
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - A Supabase account and project
 - Git (optional)
 
 ### Step 1: Install Dependencies
+
 ```bash
 npm install
 ```
@@ -123,16 +129,20 @@ npm install
 ### Step 2: Set Up Supabase
 
 1. **Create Supabase Project**
+
    - Go to [supabase.com](https://supabase.com)
    - Create a new project
    - Wait for project initialization (~2 minutes)
 
 2. **Get API Credentials**
+
    - Go to Project Settings → API
    - Copy `Project URL` and `anon public` key
 
 3. **Configure Environment Variables**
+
    - Create `.env.local` in project root:
+
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -146,12 +156,14 @@ npm install
 ### Step 3: Set Up Database
 
 1. **Run Migrations**
+
    - Go to Supabase Dashboard → SQL Editor
    - Run `supabase/migrations/001_initial_schema.sql`
    - Run `supabase/migrations/002_storage_setup.sql`
    - Run `supabase/migrations/003_backfill_existing_profiles.sql` (if you have existing users)
 
 2. **Verify Tables**
+
    - Go to Table Editor
    - Verify these tables exist:
      - `profiles`
@@ -166,11 +178,13 @@ npm install
    - Verify `memories` bucket exists
 
 ### Step 4: Run Development Server
+
 ```bash
 npm run dev
 ```
 
 ### Step 5: Access Application
+
 - Open [http://localhost:3000](http://localhost:3000)
 - Sign up a new account or log in
 
@@ -181,9 +195,11 @@ npm run dev
 ### Tables Overview
 
 #### 1. `profiles`
+
 User profile information linked to `auth.users`
 
 **Columns:**
+
 - `id` (UUID, PK) - References `auth.users(id)`
 - `email` (TEXT) - User email
 - `name` (TEXT) - User name
@@ -194,9 +210,11 @@ User profile information linked to `auth.users`
 **Auto-creation:** Trigger creates profile on user signup
 
 #### 2. `events`
+
 Family calendar events
 
 **Columns:**
+
 - `id` (UUID, PK)
 - `title` (TEXT) - Event title
 - `date` (DATE) - Event date
@@ -210,9 +228,11 @@ Family calendar events
 **Indexes:** `date`, `category`
 
 #### 3. `tasks`
+
 Personal & family to-do lists
 
 **Columns:**
+
 - `id` (UUID, PK)
 - `title` (TEXT) - Task title
 - `due_date` (DATE) - Optional due date
@@ -226,9 +246,11 @@ Personal & family to-do lists
 **Indexes:** `assigned_to`, `completed`, `due_date`
 
 #### 4. `notes`
+
 Family notes & important information
 
 **Columns:**
+
 - `id` (UUID, PK)
 - `title` (TEXT) - Note title
 - `content` (TEXT) - Note content
@@ -243,9 +265,11 @@ Family notes & important information
 **RLS:** Only parents can create/edit/delete (if `is_readonly_for_kids` is true)
 
 #### 5. `announcements`
+
 Broadcast short messages
 
 **Columns:**
+
 - `id` (UUID, PK)
 - `message` (TEXT) - Announcement message
 - `expires_at` (TIMESTAMPTZ) - Optional expiry
@@ -257,9 +281,11 @@ Broadcast short messages
 **RLS:** Only shows active announcements (not expired)
 
 #### 6. `memories`
+
 Family memories with photos
 
 **Columns:**
+
 - `id` (UUID, PK)
 - `photo_url` (TEXT) - URL to photo in storage
 - `note` (TEXT) - Optional note
@@ -273,6 +299,7 @@ Family memories with photos
 ### Row Level Security (RLS)
 
 All tables have RLS enabled with policies:
+
 - **Events, Tasks, Announcements, Memories:** All authenticated users can view/create/update/delete
 - **Notes:** All can view, but only parents can create/edit/delete (when `is_readonly_for_kids` is true)
 - **Profiles:** All can view, users can update their own
@@ -286,6 +313,7 @@ All tables have RLS enabled with policies:
 **Status:** Complete
 
 **Features:**
+
 - Email + password authentication
 - Sign up page (`/signup`)
 - Login page (`/login`)
@@ -294,6 +322,7 @@ All tables have RLS enabled with policies:
 - Protected routes (middleware redirects to login)
 
 **Files:**
+
 - `app/login/page.tsx`
 - `app/signup/page.tsx`
 - `app/auth/signout/route.ts`
@@ -301,6 +330,7 @@ All tables have RLS enabled with policies:
 - `lib/supabase/middleware.ts`
 
 **Phase 1 Behavior:**
+
 - No email confirmation required
 - Immediate login after signup
 - All users have equal access
@@ -312,6 +342,7 @@ All tables have RLS enabled with policies:
 **Status:** Complete
 
 **Features:**
+
 - Create events with:
   - Title (required)
   - Date (required)
@@ -330,6 +361,7 @@ All tables have RLS enabled with policies:
 - Past events shown separately
 
 **Files:**
+
 - `app/calendar/page.tsx`
 - `app/calendar/calendar-client.tsx`
 - `app/calendar/event-card.tsx`
@@ -338,6 +370,7 @@ All tables have RLS enabled with policies:
 - `app/api/events/[id]/route.ts`
 
 **UI:**
+
 - Minimal list design
 - Category badges
 - Modal form for create/edit
@@ -350,6 +383,7 @@ All tables have RLS enabled with policies:
 **Status:** Complete
 
 **Features:**
+
 - Create tasks with:
   - Title (required)
   - Due date (optional)
@@ -372,6 +406,7 @@ All tables have RLS enabled with policies:
 - Strikethrough for completed tasks
 
 **Files:**
+
 - `app/tasks/page.tsx`
 - `app/tasks/tasks-client.tsx`
 - `app/tasks/task-card.tsx`
@@ -380,6 +415,7 @@ All tables have RLS enabled with policies:
 - `app/api/tasks/[id]/route.ts`
 
 **UI:**
+
 - Checkbox list
 - Filter dropdown
 - Active/Completed sections
@@ -392,6 +428,7 @@ All tables have RLS enabled with policies:
 **Status:** Not Started
 
 **Planned Features:**
+
 - Create notes with:
   - Title
   - Content
@@ -402,53 +439,86 @@ All tables have RLS enabled with policies:
 
 ---
 
-### 🚧 5. Announcements (Not Chat)
+### ✅ 5. Announcements (Not Chat)
 
-**Status:** Not Started
+**Status:** Complete
 
-**Planned Features:**
+**Features:**
+
 - Create announcement:
   - Short message
   - Auto-expiry (optional)
 - Read-only messages
 - No replies, no threads
+- Auto-expiry filtering
+- Delete announcements
+- API routes (GET, POST, DELETE)
 - Examples: "Dinner at 8 PM", "Leaving at 6:30 AM tomorrow"
 
 ---
 
-### 🚧 6. Family Memories
+### ✅ 6. Family Memories
 
-**Status:** Not Started
+**Status:** Complete
 
-**Planned Features:**
-- Upload photo
-- Add short note
+**Features:**
+
+- Upload photo (JPG, PNG, GIF, max 5MB)
+- Add short note (optional)
 - Auto timestamp
-- Timeline view
+- Timeline view (grouped by date)
 - Storage in Supabase Storage
+- Edit memory notes
+- Delete memories (and photos)
+- API routes (GET, POST, PUT, DELETE, Upload)
 
 ---
 
 ## API Endpoints
 
 ### Authentication
+
 - `POST /auth/signout` - Sign out user
 
 ### Events
+
 - `GET /api/events` - List all events
 - `POST /api/events` - Create new event
 - `PUT /api/events/[id]` - Update event
 - `DELETE /api/events/[id]` - Delete event
 
 ### Tasks
+
 - `GET /api/tasks` - List all tasks
 - `POST /api/tasks` - Create new task
 - `PUT /api/tasks/[id]` - Update task
 - `DELETE /api/tasks/[id]` - Delete task
 
+### Notes
+
+- `GET /api/notes` - List all notes
+- `POST /api/notes` - Create new note
+- `PUT /api/notes/[id]` - Update note
+- `DELETE /api/notes/[id]` - Delete note
+
+### Announcements
+
+- `GET /api/announcements` - List active announcements
+- `POST /api/announcements` - Create new announcement
+- `DELETE /api/announcements/[id]` - Delete announcement
+
+### Memories
+
+- `GET /api/memories` - List all memories
+- `POST /api/memories/upload` - Upload photo to storage
+- `POST /api/memories` - Create new memory
+- `PUT /api/memories/[id]` - Update memory note
+- `DELETE /api/memories/[id]` - Delete memory and photo
+
 ### Request/Response Examples
 
 #### Create Event
+
 ```typescript
 POST /api/events
 Body: {
@@ -461,6 +531,7 @@ Body: {
 ```
 
 #### Create Task
+
 ```typescript
 POST /api/tasks
 Body: {
@@ -471,6 +542,7 @@ Body: {
 ```
 
 #### Update Task (Mark Complete)
+
 ```typescript
 PUT /api/tasks/[id]
 Body: {
@@ -486,6 +558,7 @@ Body: {
 ## Authentication Flow
 
 ### Sign Up Flow
+
 1. User visits `/signup`
 2. Enters email and password
 3. Supabase creates user in `auth.users`
@@ -494,6 +567,7 @@ Body: {
 6. Redirected to `/home`
 
 ### Login Flow
+
 1. User visits `/login`
 2. Enters email and password
 3. Supabase authenticates
@@ -501,11 +575,13 @@ Body: {
 5. Redirected to `/home`
 
 ### Protected Routes
+
 - Middleware checks authentication on all routes except `/login`, `/signup`, `/`
 - Unauthenticated users redirected to `/login`
 - Session persists across page refreshes
 
 ### Sign Out Flow
+
 1. User clicks "Sign Out"
 2. POST request to `/auth/signout`
 3. Supabase session cleared
@@ -516,6 +592,7 @@ Body: {
 ## UI/UX Design Principles
 
 ### Design Rules
+
 - **Calm colors** - Blues, indigos, purples
 - **Large readable fonts** - Easy for all ages
 - **Minimal UI** - No distractions
@@ -523,6 +600,7 @@ Body: {
 - **Family-friendly** - Supportive, not controlling
 
 ### Navigation
+
 - Top navigation bar with links to:
   - Home
   - Calendar
@@ -533,6 +611,7 @@ Body: {
 - Sign out button in navigation
 
 ### Color Scheme
+
 - Background: Gradient from blue-50 to purple-50
 - Cards: White with shadow
 - Primary: Indigo-600
@@ -543,26 +622,16 @@ Body: {
 
 ## Next Steps
 
-### Phase 1 Remaining Features
+### ✅ Phase 1 Complete!
 
-1. **Family Notes & Important Info** ⭐
-   - Create notes page
-   - CRUD operations
-   - Category filtering
-   - Parent-only edit functionality
+All 6 features have been implemented and tested:
 
-2. **Announcements** ⭐
-   - Create announcements page
-   - Auto-expiry handling
-   - Read-only display
-   - Simple message list
-
-3. **Family Memories** ⭐
-   - Photo upload
-   - Timeline view
-   - Photo upload to Supabase Storage
-   - Note attachment
-   - Chronological display
+1. ✅ Authentication & Access
+2. ✅ Family Calendar & Events
+3. ✅ Personal & Family To-Do Lists
+4. ✅ Family Notes & Important Info
+5. ✅ Announcements (Not Chat)
+6. ✅ Family Memories
 
 ### Phase 2 Enhancements
 
@@ -577,6 +646,7 @@ Body: {
 ## Testing Checklist
 
 ### Authentication
+
 - [x] Sign up new user
 - [x] Login existing user
 - [x] Sign out
@@ -584,6 +654,7 @@ Body: {
 - [x] Session persistence
 
 ### Calendar
+
 - [x] Create event
 - [x] Edit event
 - [x] Delete event
@@ -593,6 +664,7 @@ Body: {
 - [x] Past events separation
 
 ### Tasks
+
 - [x] Create task
 - [x] Edit task
 - [x] Delete task
@@ -609,18 +681,21 @@ Body: {
 ### Common Issues
 
 **Events/Tasks not appearing:**
+
 - Check browser console for errors
 - Verify Supabase environment variables
 - Check Network tab for API call status
 - Verify database tables exist
 
 **Authentication not working:**
+
 - Verify email confirmations are disabled (Phase 1)
 - Check Supabase project settings
 - Verify environment variables are set
 - Check middleware is working
 
 **Profile not created:**
+
 - Run migration `003_backfill_existing_profiles.sql`
 - Check trigger `on_auth_user_created` exists
 - Verify function `handle_new_user()` exists
@@ -630,18 +705,21 @@ Body: {
 ## Deployment Notes
 
 ### Environment Variables Required
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### Vercel Deployment
+
 1. Push code to Git repository
 2. Import project in Vercel
 3. Add environment variables
 4. Deploy
 
 ### Phase 2: Custom Domain
+
 - Configure `rasna.com` in Vercel project settings
 - Update DNS records as instructed
 
@@ -650,6 +728,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Development Notes
 
 ### Code Style
+
 - TypeScript strict mode
 - Functional components
 - Server Components where possible
@@ -657,6 +736,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - Tailwind CSS for styling
 
 ### Best Practices
+
 - RLS enabled on all tables
 - Server-side data fetching
 - Client-side interactivity only when needed
@@ -676,4 +756,3 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 **Document Version:** 1.0  
 **Last Updated:** Current Session  
 **Maintained By:** Development Team
-
