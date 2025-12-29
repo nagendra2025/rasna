@@ -127,6 +127,8 @@ rasna/
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 4. Deploy!
 
+**📖 For detailed deployment instructions (registration, plan selection, payment, etc.), see [VERCEL_DEPLOYMENT_GUIDE.md](./VERCEL_DEPLOYMENT_GUIDE.md)**
+
 ### Custom Domain (Phase 2)
 
 After initial deployment, configure `rasna.com` in Vercel project settings.

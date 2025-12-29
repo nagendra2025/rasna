@@ -3,6 +3,8 @@
 **Status:** Ready for Deployment  
 **Last Updated:** Current Session
 
+> **📖 For a complete step-by-step guide from registration to deployment, see [VERCEL_DEPLOYMENT_GUIDE.md](./VERCEL_DEPLOYMENT_GUIDE.md)**
+
 ---
 
 ## Pre-Deployment Checklist
@@ -44,33 +46,31 @@
 
 ### Step 2: Deploy to Vercel
 
-1. **Go to Vercel Dashboard**
-   - Visit [vercel.com](https://vercel.com)
-   - Sign in with your account
+**Quick Steps:**
+1. Sign up at [vercel.com](https://vercel.com) (use Hobby plan - free)
+2. Connect your Git repository (GitHub/GitLab/Bitbucket)
+3. Import your project
+4. Add environment variables (see below)
+5. Click "Deploy"
 
-2. **Import Project**
-   - Click "Add New..." → "Project"
-   - Import from your Git repository
-   - Select the repository
+**Detailed Instructions:**
+See [VERCEL_DEPLOYMENT_GUIDE.md](./VERCEL_DEPLOYMENT_GUIDE.md) for complete step-by-step instructions covering:
+- Account registration
+- Plan selection (Hobby vs Pro)
+- Payment setup (if needed)
+- Repository connection
+- Project configuration
+- Environment variables setup
+- First deployment
+- Post-deployment verification
 
-3. **Configure Project**
-   - Framework Preset: Next.js (auto-detected)
-   - Root Directory: `./` (default)
-   - Build Command: `npm run build` (default)
-   - Output Directory: `.next` (default)
-
-4. **Add Environment Variables**
-   - Go to Project Settings → Environment Variables
-   - Add:
-     ```
-     NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
-   - Make sure to add for all environments (Production, Preview, Development)
-
-5. **Deploy**
-   - Click "Deploy"
-   - Wait for build to complete (~2-3 minutes)
+**Environment Variables to Add:**
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+- Add in Project Settings → Environment Variables
+- Select all three environments (Production, Preview, Development)
 
 ### Step 3: Verify Deployment
 
