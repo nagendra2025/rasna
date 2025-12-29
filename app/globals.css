@@ -24,3 +24,40 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Animated RASNA - Continuous Color Changing Effect */
+@keyframes colorShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-rasna {
+  background: linear-gradient(
+    90deg,
+    #ff6b6b,
+    #4ecdc4,
+    #45b7d1,
+    #96ceb4,
+    #ffeaa7,
+    #fdcb6e,
+    #e17055,
+    #74b9ff,
+    #a29bfe,
+    #fd79a8,
+    #ff6b6b
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorShift 8s ease infinite;
+  display: inline-block;
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,82 @@
+-- ============================================
+-- USER DELETION SCRIPT
+-- ============================================
+-- This script deletes a user and all associated data
+-- WARNING: This permanently deletes all user data!
+--
+-- Usage:
+-- 1. Replace 'USER_UUID_HERE' with the actual user UUID
+-- 2. Run this script in Supabase SQL Editor
+-- 3. Verify deletion in Table Editor
+--
+-- Note: Due to ON DELETE CASCADE, deleting from auth.users
+-- will automatically delete:
+-- - User's profile (from profiles table)
+-- - All events created by that user
+-- - All tasks created by that user
+-- - All notes created by that user
+-- - All announcements created by that user
+-- - All memories created by that user
+--
+-- IMPORTANT: Storage files (photos) are NOT automatically deleted.
+-- Run cleanup-storage.sql after deleting users to clean up orphaned files.
+
+-- ============================================
+-- STEP 1: Find the user UUID
+-- ============================================
+-- Uncomment and run this to find the user UUID by email:
+-- SELECT id, email, created_at 
+-- FROM auth.users 
+-- WHERE email = 'user@example.com';
+
+-- ============================================
+-- STEP 2: Delete the user (replace UUID)
+-- ============================================
+-- Replace 'USER_UUID_HERE' with the actual UUID from Step 1
+-- DELETE FROM auth.users WHERE id = 'USER_UUID_HERE';
+
+-- ============================================
+-- STEP 3: Verify deletion
+-- ============================================
+-- After deletion, verify:
+-- SELECT * FROM profiles WHERE id = 'USER_UUID_HERE'; -- Should return nothing
+-- SELECT * FROM events WHERE created_by = 'USER_UUID_HERE'; -- Should return nothing
+-- SELECT * FROM tasks WHERE created_by = 'USER_UUID_HERE'; -- Should return nothing
+-- SELECT * FROM notes WHERE created_by = 'USER_UUID_HERE'; -- Should return nothing
+-- SELECT * FROM announcements WHERE created_by = 'USER_UUID_HERE'; -- Should return nothing
+-- SELECT * FROM memories WHERE created_by = 'USER_UUID_HERE'; -- Should return nothing
+
+-- ============================================
+-- BULK DELETE EXAMPLE (Multiple Users)
+-- ============================================
+-- To delete multiple users by email pattern:
+-- DELETE FROM auth.users 
+-- WHERE email IN (
+--   'user1@example.com',
+--   'user2@example.com',
+--   'user3@example.com'
+-- );
+
+-- ============================================
+-- SAFE DELETE (Check before deleting)
+-- ============================================
+-- Before deleting, you can check what will be deleted:
+-- 
+-- Check user's profile:
+-- SELECT * FROM profiles WHERE id = 'USER_UUID_HERE';
+-- 
+-- Check user's events:
+-- SELECT COUNT(*) as event_count FROM events WHERE created_by = 'USER_UUID_HERE';
+-- 
+-- Check user's tasks:
+-- SELECT COUNT(*) as task_count FROM tasks WHERE created_by = 'USER_UUID_HERE';
+-- 
+-- Check user's notes:
+-- SELECT COUNT(*) as note_count FROM notes WHERE created_by = 'USER_UUID_HERE';
+-- 
+-- Check user's announcements:
+-- SELECT COUNT(*) as announcement_count FROM announcements WHERE created_by = 'USER_UUID_HERE';
+-- 
+-- Check user's memories:
+-- SELECT COUNT(*) as memory_count FROM memories WHERE created_by = 'USER_UUID_HERE';
+

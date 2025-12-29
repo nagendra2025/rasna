@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import FamilySection from "@/components/family-section";
+import AnimatedRasna from "@/components/animated-rasna";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -13,6 +15,13 @@ export default async function HomePage() {
     redirect("/login");
   }
 
+  // Fetch current user's profile
+  const { data: currentUserProfile } = await supabase
+    .from("profiles")
+    .select("nick_name, photo_url, name")
+    .eq("id", user.id)
+    .single();
+
   // Fetch all family profiles
   const { data: profiles } = await supabase
     .from("profiles")
@@ -20,13 +29,25 @@ export default async function HomePage() {
     .order("role", { ascending: true })
     .order("created_at", { ascending: true });
 
+  // Get display name (nick_name or name or email prefix)
+  const displayName = currentUserProfile?.nick_name || 
+                      currentUserProfile?.name || 
+                      user.email?.split("@")[0] || 
+                      "User";
+
+  // Get profile picture URL
+  const profilePhotoUrl = currentUserProfile?.photo_url;
+
+  // Get initial letter for fallback
+  const initialLetter = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-12 text-center">
           <h1 className="mb-4 text-5xl font-bold text-gray-900">
-            Welcome to Rasna
+            Welcome to <AnimatedRasna className="inline-block" />
           </h1>
           <p className="text-xl text-gray-600">
             Your family dashboard for coordination, reminders, and memories
@@ -37,13 +58,37 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl">
           {/* Quick Stats or Welcome Message */}
           <div className="mb-12 rounded-2xl bg-white p-8 shadow-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-gray-800">
-              Hello, {user.email?.split("@")[0]}!
-            </h2>
-            <p className="text-lg text-gray-600">
-              Everything your family needs is right here. Choose where you'd
-              like to go:
-            </p>
+            <div className="flex items-center gap-6">
+              {/* Profile Picture */}
+              <div className="flex-shrink-0">
+                {profilePhotoUrl ? (
+                  <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-indigo-200 shadow-md">
+                    <Image
+                      src={profilePhotoUrl}
+                      alt={displayName}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-indigo-200 bg-indigo-100 text-3xl font-bold text-indigo-700 shadow-md">
+                    {initialLetter}
+                  </div>
+                )}
+              </div>
+              
+              {/* Greeting */}
+              <div className="flex-1">
+                <h2 className="mb-2 text-3xl font-semibold text-gray-800">
+                  Hello, {displayName}!
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Everything your family needs is right here. Choose where you'd
+                  like to go:
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Feature Cards */}

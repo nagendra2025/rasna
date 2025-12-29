@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import AnimatedRasna from "@/components/animated-rasna";
 
 export default async function Navigation() {
   const supabase = await createClient();
@@ -25,8 +26,8 @@ export default async function Navigation() {
     <nav className="border-b border-gray-200 bg-white shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          <Link href="/home" className="text-xl font-bold text-gray-900">
-            Rasna
+          <Link href="/home" className="text-5xl font-bold">
+            <AnimatedRasna />
           </Link>
           <div className="flex gap-1 overflow-x-auto">
             {navItems.map((item) => (

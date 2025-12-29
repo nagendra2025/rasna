@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AnimatedRasna from "@/components/animated-rasna";
 
 export default function LandingPage() {
   return (
@@ -7,7 +8,7 @@ export default function LandingPage() {
         {/* Hero Section */}
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="mb-6 text-6xl font-bold text-gray-900">
-            Welcome to Rasna
+            Welcome to <AnimatedRasna className="inline-block" />
           </h1>
           <p className="mb-4 text-2xl text-gray-700">
             Your family dashboard for coordination, reminders, and memories
