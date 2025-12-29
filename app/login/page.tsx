@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import AnimatedRasna from "@/components/animated-rasna";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,8 +14,11 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setError(null);
     setLoading(true);
 
@@ -39,11 +43,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome to Rasna</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Welcome to <AnimatedRasna className="inline-block !text-3xl" />
+          </h1>
           <p className="mt-2 text-gray-600">Your family dashboard</p>
         </div>
 
-        <form onSubmit={handleLogin} className="mt-8 space-y-6">
+        <div className="mt-8 space-y-6">
           {error && (
             <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800">
               {error}
@@ -89,13 +95,14 @@ export default function LoginPage() {
           </div>
 
           <button
-            type="submit"
+            type="button"
+            onClick={handleLogin}
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-lg font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
-        </form>
+        </div>
 
         <p className="text-center text-sm text-gray-600">
           Don't have an account?{" "}

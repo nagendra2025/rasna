@@ -147,6 +147,7 @@ For detailed documentation, see:
 - **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Quick status reference
 - **[FEATURES/](./FEATURES/)** - Individual feature documentation
 - **[supabase/SETUP.md](./supabase/SETUP.md)** - Database setup instructions
+- **[ANIMATED_RASNA_IMPLEMENTATION.md](./ANIMATED_RASNA_IMPLEMENTATION.md)** - Animated branding feature documentation
 
 ## License
 

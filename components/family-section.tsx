@@ -3,6 +3,7 @@
 import Link from "next/link";
 import FamilyMemberCard from "./family-member-card";
 import { useRouter } from "next/navigation";
+import AnimatedRasna from "@/components/animated-rasna";
 
 interface Profile {
   id: string;
@@ -36,7 +37,8 @@ export default function FamilySection({
           👨‍👩‍👧‍👦 Meet the Family
         </h2>
         <p className="text-gray-600">
-          Your family members on Rasna
+          Your family members on{" "}
+          <AnimatedRasna className="inline-block text-base font-normal" />
         </p>
       </div>
 
