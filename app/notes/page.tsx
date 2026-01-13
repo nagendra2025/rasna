@@ -40,9 +40,16 @@ export default async function NotesPage() {
           </p>
         </header>
 
-        <NotesClient initialNotes={notes || []} isParent={isParent} />
+        <NotesClient initialNotes={notes || []} isParent={isParent} currentUserId={user.id} />
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

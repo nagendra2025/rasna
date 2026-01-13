@@ -26,6 +26,29 @@ export async function PUT(
     );
   }
 
+  // Check if the current user is the creator of this task
+  const { data: existingTask } = await supabase
+    .from("tasks")
+    .select("created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingTask) {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const taskCreatorId = String(existingTask.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (taskCreatorId !== currentUserId) {
+    console.log('Task edit denied:', { taskCreatorId, currentUserId, taskId: id });
+    return NextResponse.json(
+      { error: "You can only edit tasks you created" },
+      { status: 403 }
+    );
+  }
+
   const updateData: any = {
     title,
     due_date: due_date || null,
@@ -75,6 +98,29 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Check if the current user is the creator of this task
+  const { data: existingTask } = await supabase
+    .from("tasks")
+    .select("created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingTask) {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const taskCreatorId = String(existingTask.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (taskCreatorId !== currentUserId) {
+    console.log('Task delete denied:', { taskCreatorId, currentUserId, taskId: id });
+    return NextResponse.json(
+      { error: "You can only delete tasks you created" },
+      { status: 403 }
+    );
+  }
+
   const { error } = await supabase.from("tasks").delete().eq("id", id);
 
   if (error) {
@@ -83,4 +129,11 @@ export async function DELETE(
 
   return NextResponse.json({ success: true });
 }
+
+
+
+
+
+
+
 

@@ -12,3 +12,10 @@ WHERE id = 'memories';
 -- Note: The existing RLS policies still apply for upload/delete operations
 -- Public access only allows viewing, not modifying
 
+
+
+
+
+
+
+

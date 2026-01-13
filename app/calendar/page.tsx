@@ -29,9 +29,16 @@ export default async function CalendarPage() {
           </p>
         </header>
 
-        <CalendarClient initialEvents={events || []} />
+        <CalendarClient initialEvents={events || []} currentUserId={user.id} />
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

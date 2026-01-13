@@ -26,6 +26,29 @@ export async function PUT(
     );
   }
 
+  // Check if the current user is the creator of this event
+  const { data: existingEvent } = await supabase
+    .from("events")
+    .select("created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingEvent) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const eventCreatorId = String(existingEvent.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (eventCreatorId !== currentUserId) {
+    console.log('Event edit denied:', { eventCreatorId, currentUserId, eventId: id });
+    return NextResponse.json(
+      { error: "You can only edit events you created" },
+      { status: 403 }
+    );
+  }
+
   const { data: event, error } = await supabase
     .from("events")
     .update({
@@ -65,6 +88,29 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Check if the current user is the creator of this event
+  const { data: existingEvent } = await supabase
+    .from("events")
+    .select("created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingEvent) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const eventCreatorId = String(existingEvent.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (eventCreatorId !== currentUserId) {
+    console.log('Event delete denied:', { eventCreatorId, currentUserId, eventId: id });
+    return NextResponse.json(
+      { error: "You can only delete events you created" },
+      { status: 403 }
+    );
+  }
+
   const { error } = await supabase.from("events").delete().eq("id", id);
 
   if (error) {
@@ -73,4 +119,11 @@ export async function DELETE(
 
   return NextResponse.json({ success: true });
 }
+
+
+
+
+
+
+
 

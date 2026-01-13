@@ -30,9 +30,16 @@ export default async function TasksPage() {
           </p>
         </header>
 
-        <TasksClient initialTasks={tasks || []} />
+        <TasksClient initialTasks={tasks || []} currentUserId={user.id} />
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

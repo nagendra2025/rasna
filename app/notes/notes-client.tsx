@@ -19,11 +19,12 @@ interface Note {
 interface NotesClientProps {
   initialNotes: Note[];
   isParent: boolean;
+  currentUserId: string;
 }
 
 type CategoryFilter = "all" | "emergency" | "health" | "school" | "general";
 
-export default function NotesClient({ initialNotes, isParent }: NotesClientProps) {
+export default function NotesClient({ initialNotes, isParent, currentUserId }: NotesClientProps) {
   const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
@@ -193,6 +194,7 @@ export default function NotesClient({ initialNotes, isParent }: NotesClientProps
               isParent={isParent}
               onEdit={() => handleEditClick(note)}
               onDelete={() => handleDeleteNote(note.id)}
+              canEdit={isParent && note.created_by === currentUserId}
             />
           ))}
         </div>

@@ -28,9 +28,16 @@ export default async function MemoriesPage() {
           </p>
         </header>
 
-        <MemoriesClient initialMemories={memories || []} />
+        <MemoriesClient initialMemories={memories || []} currentUserId={user.id} />
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

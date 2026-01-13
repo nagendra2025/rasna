@@ -20,9 +20,10 @@ interface Event {
 
 interface CalendarClientProps {
   initialEvents: Event[];
+  currentUserId: string;
 }
 
-export default function CalendarClient({ initialEvents }: CalendarClientProps) {
+export default function CalendarClient({ initialEvents, currentUserId }: CalendarClientProps) {
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
@@ -153,14 +154,27 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {upcomingEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onEdit={() => handleEditClick(event)}
-                onDelete={() => handleDeleteEvent(event.id)}
-              />
-            ))}
+            {upcomingEvents.map((event) => {
+              // Ensure both are strings for comparison
+              const eventCreatorId = String(event.created_by || '');
+              const currentUserIdStr = String(currentUserId || '');
+              const isCreator = eventCreatorId === currentUserIdStr;
+              
+              // Debug logging (remove in production)
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Event:', event.title, 'created_by:', eventCreatorId, 'currentUserId:', currentUserIdStr, 'isCreator:', isCreator);
+              }
+              
+              return (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onEdit={() => handleEditClick(event)}
+                  onDelete={() => handleDeleteEvent(event.id)}
+                  canEdit={isCreator}
+                />
+              );
+            })}
           </div>
         )}
       </section>
@@ -170,15 +184,23 @@ export default function CalendarClient({ initialEvents }: CalendarClientProps) {
         <section>
           <h2 className="mb-4 text-2xl font-semibold text-gray-800">Past Events</h2>
           <div className="space-y-4">
-            {pastEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onEdit={() => handleEditClick(event)}
-                onDelete={() => handleDeleteEvent(event.id)}
-                isPast
-              />
-            ))}
+            {pastEvents.map((event) => {
+              // Ensure both are strings for comparison
+              const eventCreatorId = String(event.created_by || '');
+              const currentUserIdStr = String(currentUserId || '');
+              const isCreator = eventCreatorId === currentUserIdStr;
+              
+              return (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onEdit={() => handleEditClick(event)}
+                  onDelete={() => handleDeleteEvent(event.id)}
+                  isPast
+                  canEdit={isCreator}
+                />
+              );
+            })}
           </div>
         </section>
       )}

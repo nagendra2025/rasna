@@ -14,12 +14,14 @@ interface MemoryCardProps {
   memory: Memory;
   onEdit: () => void;
   onDelete: () => void;
+  canEdit?: boolean;
 }
 
 export default function MemoryCard({
   memory,
   onEdit,
   onDelete,
+  canEdit = true,
 }: MemoryCardProps) {
   const timeStr = format(parseISO(memory.created_at), "h:mm a");
 
@@ -47,21 +49,30 @@ export default function MemoryCard({
       </div>
 
       {/* Action Buttons (shown on hover) */}
-      <div className="absolute top-2 right-2 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-        <button
-          onClick={onEdit}
-          className="rounded-lg bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-700 shadow-md transition-colors hover:bg-white"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onDelete}
-          className="rounded-lg bg-red-500/90 px-3 py-1.5 text-sm font-medium text-white shadow-md transition-colors hover:bg-red-600"
-        >
-          Delete
-        </button>
-      </div>
+      {canEdit && (
+        <div className="absolute top-2 right-2 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            onClick={onEdit}
+            className="rounded-lg bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-700 shadow-md transition-colors hover:bg-white"
+          >
+            Edit
+          </button>
+          <button
+            onClick={onDelete}
+            className="rounded-lg bg-red-500/90 px-3 py-1.5 text-sm font-medium text-white shadow-md transition-colors hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
+
+
+
+
+
+
+
 

@@ -16,6 +16,7 @@ interface TaskCardProps {
   onEdit: () => void;
   onDelete: () => void;
   isCompleted?: boolean;
+  canEdit?: boolean;
 }
 
 const assigneeLabels = {
@@ -40,6 +41,7 @@ export default function TaskCard({
   onEdit,
   onDelete,
   isCompleted = false,
+  canEdit = true,
 }: TaskCardProps) {
   const getDueDateLabel = () => {
     if (!task.due_date) return null;
@@ -77,7 +79,10 @@ export default function TaskCard({
           type="checkbox"
           checked={task.completed}
           onChange={onToggleComplete}
-          className="mt-1 h-5 w-5 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500"
+          disabled={!canEdit}
+          className={`mt-1 h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 ${
+            canEdit ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+          }`}
         />
 
         {/* Task Content */}
@@ -109,22 +114,31 @@ export default function TaskCard({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            onClick={onEdit}
-            className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
-          >
-            Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-200"
-          >
-            Delete
-          </button>
-        </div>
+        {canEdit && (
+          <div className="flex gap-2">
+            <button
+              onClick={onEdit}
+              className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+            >
+              Edit
+            </button>
+            <button
+              onClick={onDelete}
+              className="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-200"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

@@ -39,23 +39,40 @@ export async function PUT(
 
   const isParent = ["father", "mother", "parent"].includes(profile.role || "");
 
-  // Check if note is readonly for kids
-  const { data: existingNote } = await supabase
-    .from("notes")
-    .select("is_readonly_for_kids")
-    .eq("id", id)
-    .single();
-
-  if (existingNote?.is_readonly_for_kids && !isParent) {
+  if (!isParent) {
     return NextResponse.json(
-      { error: "This note is read-only for kids" },
+      { error: "Only parents can edit notes" },
       { status: 403 }
     );
   }
 
-  if (!isParent) {
+  // Check if the current user is the creator of this note
+  const { data: existingNote } = await supabase
+    .from("notes")
+    .select("is_readonly_for_kids, created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingNote) {
+    return NextResponse.json({ error: "Note not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const noteCreatorId = String(existingNote.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (noteCreatorId !== currentUserId) {
+    console.log('Note edit denied:', { noteCreatorId, currentUserId, noteId: id });
     return NextResponse.json(
-      { error: "Only parents can edit notes" },
+      { error: "You can only edit notes you created" },
+      { status: 403 }
+    );
+  }
+
+  // Check if note is readonly for kids (this check is now redundant but kept for clarity)
+  if (existingNote.is_readonly_for_kids && !isParent) {
+    return NextResponse.json(
+      { error: "This note is read-only for kids" },
       { status: 403 }
     );
   }
@@ -118,6 +135,29 @@ export async function DELETE(
     );
   }
 
+  // Check if the current user is the creator of this note
+  const { data: existingNote } = await supabase
+    .from("notes")
+    .select("created_by")
+    .eq("id", id)
+    .single();
+
+  if (!existingNote) {
+    return NextResponse.json({ error: "Note not found" }, { status: 404 });
+  }
+
+  // Ensure both are strings for comparison (UUID comparison)
+  const noteCreatorId = String(existingNote.created_by || '');
+  const currentUserId = String(user.id || '');
+  
+  if (noteCreatorId !== currentUserId) {
+    console.log('Note delete denied:', { noteCreatorId, currentUserId, noteId: id });
+    return NextResponse.json(
+      { error: "You can only delete notes you created" },
+      { status: 403 }
+    );
+  }
+
   const { error } = await supabase.from("notes").delete().eq("id", id);
 
   if (error) {
@@ -126,4 +166,11 @@ export async function DELETE(
 
   return NextResponse.json({ success: true });
 }
+
+
+
+
+
+
+
 

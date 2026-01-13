@@ -62,3 +62,10 @@ CREATE INDEX IF NOT EXISTS idx_profiles_gender ON profiles(gender);
 -- Add index on nick_name for quick lookups
 CREATE INDEX IF NOT EXISTS idx_profiles_nick_name ON profiles(nick_name);
 
+
+
+
+
+
+
+
