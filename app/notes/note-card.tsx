@@ -13,6 +13,7 @@ interface NoteCardProps {
   isParent: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  canEdit?: boolean;
 }
 
 const categoryColors = {
@@ -34,8 +35,8 @@ export default function NoteCard({
   isParent,
   onEdit,
   onDelete,
+  canEdit = false,
 }: NoteCardProps) {
-  const canEdit = isParent && (!note.is_readonly_for_kids || isParent);
 
   return (
     <div
@@ -92,4 +93,11 @@ export default function NoteCard({
     </div>
   );
 }
+
+
+
+
+
+
+
 

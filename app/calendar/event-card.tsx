@@ -16,6 +16,7 @@ interface EventCardProps {
   onEdit: () => void;
   onDelete: () => void;
   isPast?: boolean;
+  canEdit?: boolean;
 }
 
 const categoryColors = {
@@ -32,7 +33,7 @@ const categoryLabels = {
   family: "Family",
 };
 
-export default function EventCard({ event, onEdit, onDelete, isPast = false }: EventCardProps) {
+export default function EventCard({ event, onEdit, onDelete, isPast = false, canEdit = true }: EventCardProps) {
   const eventDate = parseISO(event.date);
   const dateStr = format(eventDate, "EEEE, MMMM d, yyyy");
   
@@ -72,22 +73,31 @@ export default function EventCard({ event, onEdit, onDelete, isPast = false }: E
           )}
         </div>
 
-        <div className="ml-4 flex gap-2">
-          <button
-            onClick={onEdit}
-            className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
-          >
-            Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-200"
-          >
-            Delete
-          </button>
-        </div>
+        {canEdit && (
+          <div className="ml-4 flex gap-2">
+            <button
+              onClick={onEdit}
+              className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+            >
+              Edit
+            </button>
+            <button
+              onClick={onDelete}
+              className="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-200"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
 

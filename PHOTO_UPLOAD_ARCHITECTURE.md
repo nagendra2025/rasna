@@ -452,3 +452,10 @@ Key architectural decisions:
 
 This architecture ensures photos are reliably saved during signup while maintaining security and providing clear observability.
 
+
+
+
+
+
+
+

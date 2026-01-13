@@ -20,11 +20,12 @@ interface Task {
 
 interface TasksClientProps {
   initialTasks: Task[];
+  currentUserId: string;
 }
 
 type AssigneeFilter = "all" | "father" | "mother" | "son" | "daughter";
 
-export default function TasksClient({ initialTasks }: TasksClientProps) {
+export default function TasksClient({ initialTasks, currentUserId }: TasksClientProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -187,15 +188,28 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
           </div>
         ) : (
           <div className="space-y-3">
-            {activeTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggleComplete={() => handleToggleComplete(task)}
-                onEdit={() => handleEditClick(task)}
-                onDelete={() => handleDeleteTask(task.id)}
-              />
-            ))}
+            {activeTasks.map((task) => {
+              // Ensure both are strings for comparison
+              const taskCreatorId = String(task.created_by || '');
+              const currentUserIdStr = String(currentUserId || '');
+              const isCreator = taskCreatorId === currentUserIdStr;
+              
+              // Debug logging (remove in production)
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Task:', task.title, 'created_by:', taskCreatorId, 'currentUserId:', currentUserIdStr, 'isCreator:', isCreator);
+              }
+              
+              return (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggleComplete={() => handleToggleComplete(task)}
+                  onEdit={() => handleEditClick(task)}
+                  onDelete={() => handleDeleteTask(task.id)}
+                  canEdit={isCreator}
+                />
+              );
+            })}
           </div>
         )}
       </section>
@@ -205,16 +219,24 @@ export default function TasksClient({ initialTasks }: TasksClientProps) {
         <section>
           <h2 className="mb-4 text-2xl font-semibold text-gray-800">Completed Tasks</h2>
           <div className="space-y-3">
-            {completedTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggleComplete={() => handleToggleComplete(task)}
-                onEdit={() => handleEditClick(task)}
-                onDelete={() => handleDeleteTask(task.id)}
-                isCompleted
-              />
-            ))}
+            {completedTasks.map((task) => {
+              // Ensure both are strings for comparison
+              const taskCreatorId = String(task.created_by || '');
+              const currentUserIdStr = String(currentUserId || '');
+              const isCreator = taskCreatorId === currentUserIdStr;
+              
+              return (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggleComplete={() => handleToggleComplete(task)}
+                  onEdit={() => handleEditClick(task)}
+                  onDelete={() => handleDeleteTask(task.id)}
+                  isCompleted
+                  canEdit={isCreator}
+                />
+              );
+            })}
           </div>
         </section>
       )}

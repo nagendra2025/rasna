@@ -16,10 +16,12 @@ interface Memory {
 
 interface MemoriesClientProps {
   initialMemories: Memory[];
+  currentUserId: string;
 }
 
 export default function MemoriesClient({
   initialMemories,
+  currentUserId,
 }: MemoriesClientProps) {
   const [memories, setMemories] = useState<Memory[]>(initialMemories);
   const [showForm, setShowForm] = useState(false);
@@ -180,6 +182,7 @@ export default function MemoriesClient({
                     memory={memory}
                     onEdit={() => handleEditClick(memory)}
                     onDelete={() => handleDeleteMemory(memory.id)}
+                    canEdit={memory.created_by === currentUserId}
                   />
                 ))}
               </div>
