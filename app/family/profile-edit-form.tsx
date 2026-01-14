@@ -12,6 +12,10 @@ interface Profile {
   photo_url: string | null;
   date_of_birth: string | null;
   bio: string | null;
+  phone_number: string | null;
+  notifications_enabled: boolean | null;
+  whatsapp_enabled: boolean | null;
+  sms_enabled: boolean | null;
 }
 
 interface ProfileEditFormProps {
@@ -29,6 +33,10 @@ export default function ProfileEditForm({
   const [role, setRole] = useState<"father" | "mother" | "son" | "daughter" | "parent" | "child">("parent");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [bio, setBio] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [whatsappEnabled, setWhatsappEnabled] = useState(true);
+  const [smsEnabled, setSmsEnabled] = useState(true);
   const [photoUrl, setPhotoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -39,6 +47,10 @@ export default function ProfileEditForm({
     setRole(profile.role || "parent");
     setDateOfBirth(profile.date_of_birth || "");
     setBio(profile.bio || "");
+    setPhoneNumber(profile.phone_number || "");
+    setNotificationsEnabled(profile.notifications_enabled ?? true);
+    setWhatsappEnabled(profile.whatsapp_enabled ?? true);
+    setSmsEnabled(profile.sms_enabled ?? true);
     setPhotoUrl(profile.photo_url || "");
     setPreview(profile.photo_url);
   }, [profile]);
@@ -91,11 +103,22 @@ export default function ProfileEditForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate phone number format (E.164: +1234567890)
+    let validatedPhoneNumber = phoneNumber.trim() || null;
+    if (validatedPhoneNumber && !validatedPhoneNumber.startsWith("+")) {
+      alert("Phone number must start with + and country code (e.g., +1234567890)");
+      return;
+    }
+
     onSubmit({
       name: name.trim() || null,
       role,
       date_of_birth: dateOfBirth || null,
       bio: bio.trim() || null,
+      phone_number: validatedPhoneNumber,
+      notifications_enabled: notificationsEnabled,
+      whatsapp_enabled: whatsappEnabled,
+      sms_enabled: smsEnabled,
       photo_url: photoUrl || null,
     });
   };
@@ -236,6 +259,67 @@ export default function ProfileEditForm({
             />
           </div>
 
+          {/* Phone Number */}
+          <div>
+            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+              Phone Number (optional)
+            </label>
+            <input
+              id="phoneNumber"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 text-lg focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="+1234567890"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Format: + followed by country code and number (e.g., +1234567890)
+            </p>
+          </div>
+
+          {/* Notification Settings */}
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <h3 className="mb-3 text-sm font-semibold text-gray-900">Notification Settings</h3>
+            
+            <div className="space-y-3">
+              <label className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={notificationsEnabled}
+                  onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                  className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Enable Notifications</span>
+              </label>
+
+              {notificationsEnabled && (
+                <>
+                  <label className="flex items-center gap-3 pl-8">
+                    <input
+                      type="checkbox"
+                      checked={whatsappEnabled}
+                      onChange={(e) => setWhatsappEnabled(e.target.checked)}
+                      disabled={!notificationsEnabled}
+                      className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+                    />
+                    <span className="text-sm text-gray-700">WhatsApp Notifications</span>
+                  </label>
+
+                  <label className="flex items-center gap-3 pl-8">
+                    <input
+                      type="checkbox"
+                      checked={smsEnabled}
+                      onChange={(e) => setSmsEnabled(e.target.checked)}
+                      disabled={!notificationsEnabled}
+                      className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+                    />
+                    <span className="text-sm text-gray-700">SMS Notifications</span>
+                  </label>
+                </>
+              )}
+            </div>
+          </div>
+
           <div className="flex gap-3 pt-4">
             <button
               type="button"
@@ -257,11 +341,4 @@ export default function ProfileEditForm({
     </div>
   );
 }
-
-
-
-
-
-
-
 

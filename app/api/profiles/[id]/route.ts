@@ -25,7 +25,7 @@ export async function PUT(
   }
 
   const body = await request.json();
-  const { name, role, photo_url, date_of_birth, bio } = body;
+  const { name, role, photo_url, date_of_birth, bio, phone_number, notifications_enabled, whatsapp_enabled, sms_enabled } = body;
 
   const updateData: any = {};
 
@@ -34,6 +34,10 @@ export async function PUT(
   if (photo_url !== undefined) updateData.photo_url = photo_url;
   if (date_of_birth !== undefined) updateData.date_of_birth = date_of_birth || null;
   if (bio !== undefined) updateData.bio = bio || null;
+  if (phone_number !== undefined) updateData.phone_number = phone_number || null;
+  if (notifications_enabled !== undefined) updateData.notifications_enabled = notifications_enabled;
+  if (whatsapp_enabled !== undefined) updateData.whatsapp_enabled = whatsapp_enabled;
+  if (sms_enabled !== undefined) updateData.sms_enabled = sms_enabled;
 
   const { data: profile, error } = await supabase
     .from("profiles")
@@ -52,11 +56,4 @@ export async function PUT(
 
   return NextResponse.json({ profile });
 }
-
-
-
-
-
-
-
 

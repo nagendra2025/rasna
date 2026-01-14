@@ -167,10 +167,3 @@ After implementing:
 
 If issues persist, check the detailed logs in Vercel to see exactly where the process is failing.
 
-
-
-
-
-
-
-

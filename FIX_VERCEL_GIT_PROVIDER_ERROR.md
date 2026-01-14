@@ -136,10 +136,3 @@ This is the standard way and avoids the "Clone" page issues.
 
 **Most Common Fix:** Go to Settings → Git → Connect GitHub → Authorize → Return to Import Project
 
-
-
-
-
-
-
-

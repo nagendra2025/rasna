@@ -7,10 +7,3 @@ export async function POST() {
   redirect("/login");
 }
 
-
-
-
-
-
-
-

@@ -567,10 +567,3 @@ WHERE expires_at IS NOT NULL AND expires_at <= NOW();
 **Documentation Version:** 1.0  
 **Last Updated:** Current Session
 
-
-
-
-
-
-
-

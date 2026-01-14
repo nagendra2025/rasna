@@ -80,10 +80,3 @@
 -- Check user's memories:
 -- SELECT COUNT(*) as memory_count FROM memories WHERE created_by = 'USER_UUID_HERE';
 
-
-
-
-
-
-
-

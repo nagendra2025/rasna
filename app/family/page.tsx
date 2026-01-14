@@ -45,10 +45,3 @@ export default async function FamilyPage() {
   );
 }
 
-
-
-
-
-
-
-

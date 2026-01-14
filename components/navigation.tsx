@@ -20,6 +20,7 @@ export default async function Navigation() {
     { href: "/announcements", label: "Announcements", icon: "📢" },
     { href: "/memories", label: "Memories", icon: "📸" },
     { href: "/family", label: "Family", icon: "👨‍👩‍👧‍👦" },
+    { href: "/settings", label: "Settings", icon: "⚙️" },
   ];
 
   return (

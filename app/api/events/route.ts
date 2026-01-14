@@ -77,10 +77,3 @@ export async function POST(request: Request) {
   return NextResponse.json({ event }, { status: 201 });
 }
 
-
-
-
-
-
-
-

@@ -25,10 +25,3 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Grant execute permission to authenticated users (though we'll use admin client)
 GRANT EXECUTE ON FUNCTION public.update_profile_photo_url(UUID, TEXT) TO authenticated;
 
-
-
-
-
-
-
-

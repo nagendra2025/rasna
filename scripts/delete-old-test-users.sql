@@ -154,10 +154,3 @@ WHERE id IN (
 -- 3. Keep this folder:
 --    - profiles/5e1bb665-1f00-429c-9bc6-a6b0a2de7dce/ (new user)
 
-
-
-
-
-
-
-
