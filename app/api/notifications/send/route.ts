@@ -117,6 +117,8 @@ export async function POST(request: Request) {
           whatsapp: result.whatsapp,
           sms: result.sms,
           errors: result.errors,
+          whatsappDetails: result.whatsappDetails,
+          smsDetails: result.smsDetails,
         });
       }
     }

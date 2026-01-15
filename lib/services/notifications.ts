@@ -24,7 +24,7 @@ export function isRateLimitError(error: any): boolean {
 export async function sendWhatsAppMessage(
   to: string,
   message: string
-): Promise<{ success: boolean; error?: string; rateLimited?: boolean }> {
+): Promise<{ success: boolean; error?: string; rateLimited?: boolean; twilioError?: any }> {
   try {
     const client = getTwilioClient();
     const from = process.env.TWILIO_WHATSAPP_FROM;
@@ -37,20 +37,48 @@ export async function sendWhatsAppMessage(
     const toNumber = to.startsWith("whatsapp:") ? to : `whatsapp:${to}`;
     const fromNumber = from.startsWith("whatsapp:") ? from : `whatsapp:${from}`;
 
-    await client.messages.create({
+    console.log(`[WhatsApp] Attempting to send to: ${toNumber}, from: ${fromNumber}`);
+
+    const twilioResponse = await client.messages.create({
       body: message,
       from: fromNumber,
       to: toNumber,
     });
 
+    console.log(`[WhatsApp] Twilio response:`, {
+      sid: twilioResponse.sid,
+      status: twilioResponse.status,
+      errorCode: twilioResponse.errorCode,
+      errorMessage: twilioResponse.errorMessage,
+    });
+
+    // Check if message was actually queued/sent
+    // Status can be: queued, sending, sent, delivered, failed, etc.
+    if (twilioResponse.status === "failed" || twilioResponse.errorCode) {
+      return {
+        success: false,
+        error: twilioResponse.errorMessage || `Twilio error: ${twilioResponse.errorCode}`,
+        twilioError: {
+          code: twilioResponse.errorCode,
+          message: twilioResponse.errorMessage,
+          status: twilioResponse.status,
+        },
+      };
+    }
+
     return { success: true };
   } catch (error: any) {
-    console.error("WhatsApp send error:", error);
+    console.error("[WhatsApp] Send error:", error);
     const isRateLimit = isRateLimitError(error);
     return {
       success: false,
       error: error.message || "Failed to send WhatsApp message",
       rateLimited: isRateLimit,
+      twilioError: {
+        code: error.code,
+        message: error.message,
+        status: error.status,
+      },
     };
   }
 }
@@ -101,12 +129,14 @@ export async function sendNotificationToUser(
   userSmsEnabled: boolean,
   message: string,
   appSettings?: AppSettings | null
-): Promise<{ whatsapp: boolean; sms: boolean; errors: string[]; rateLimited: boolean }> {
+): Promise<{ whatsapp: boolean; sms: boolean; errors: string[]; rateLimited: boolean; whatsappDetails?: any; smsDetails?: any }> {
   const results = {
     whatsapp: false,
     sms: false,
     errors: [] as string[],
     rateLimited: false,
+    whatsappDetails: undefined as any,
+    smsDetails: undefined as any,
   };
 
   // Check app-level settings first (if provided)
@@ -125,6 +155,7 @@ export async function sendNotificationToUser(
   // Send WhatsApp if enabled at both app and user level
   if (userWhatsappEnabled && (!appSettings || appSettings.enable_whatsapp)) {
     const whatsappResult = await sendWhatsAppMessage(phoneNumber, message);
+    results.whatsappDetails = whatsappResult;
     if (whatsappResult.success) {
       results.whatsapp = true;
     } else {
@@ -132,7 +163,12 @@ export async function sendNotificationToUser(
         results.rateLimited = true;
         results.errors.push(`WhatsApp: Rate limit exceeded - daily message limit reached`);
       } else {
-        results.errors.push(`WhatsApp: ${whatsappResult.error}`);
+        const errorMsg = whatsappResult.error || "Unknown error";
+        results.errors.push(`WhatsApp: ${errorMsg}`);
+        // Log detailed error for debugging
+        if (whatsappResult.twilioError) {
+          console.error(`[WhatsApp] Detailed error for ${phoneNumber}:`, whatsappResult.twilioError);
+        }
       }
     }
   }
@@ -140,6 +176,7 @@ export async function sendNotificationToUser(
   // Send SMS if enabled at both app and user level
   if (userSmsEnabled && (!appSettings || appSettings.enable_sms)) {
     const smsResult = await sendSMSMessage(phoneNumber, message);
+    results.smsDetails = smsResult;
     if (smsResult.success) {
       results.sms = true;
     } else {
