@@ -164,3 +164,4 @@ ORDER BY created_at DESC;
 -- [ ] Step 5: Manually deleted storage files
 -- [ ] Verified user no longer appears in Supabase Auth → Users
 
+

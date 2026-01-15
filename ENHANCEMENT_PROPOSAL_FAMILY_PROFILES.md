@@ -282,3 +282,4 @@ ADD COLUMN bio TEXT;
 
 Would you like me to implement this enhancement? I can start with the home page section and optionally add the full family page.
 
+

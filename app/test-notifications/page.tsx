@@ -57,6 +57,24 @@ export default function TestNotificationsPage() {
     }
   };
 
+  const runDiagnostics = async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const response = await fetch("/api/notifications/diagnose", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message || "Failed to run diagnostics");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
       <div className="mx-auto max-w-2xl">
@@ -80,6 +98,14 @@ export default function TestNotificationsPage() {
               className="w-full rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Sending..." : "Test Manual Notification Send"}
+            </button>
+
+            <button
+              onClick={runDiagnostics}
+              disabled={loading}
+              className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Running..." : "🔍 Run Diagnostics"}
             </button>
           </div>
 

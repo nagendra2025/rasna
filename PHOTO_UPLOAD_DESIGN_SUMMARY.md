@@ -137,3 +137,4 @@ Fixed:    Create User → Upload Photo (Admin) → Update Profile (Admin) → Ve
 
 *For detailed architecture documentation, see `PHOTO_UPLOAD_ARCHITECTURE.md`*
 
+

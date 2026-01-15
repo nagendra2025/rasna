@@ -296,3 +296,4 @@ For issues or questions:
 - Review application logs in Vercel
 - Check Supabase logs for database errors
 
+

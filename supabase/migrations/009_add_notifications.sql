@@ -23,3 +23,4 @@ CREATE INDEX IF NOT EXISTS idx_profiles_phone_number ON profiles(phone_number) W
 -- Add comment for phone number format
 COMMENT ON COLUMN profiles.phone_number IS 'Phone number in E.164 format (e.g., +1234567890)';
 
+

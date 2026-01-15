@@ -40,3 +40,4 @@ CREATE POLICY "Authenticated users can delete memories"
     auth.role() = 'authenticated'
   );
 
+

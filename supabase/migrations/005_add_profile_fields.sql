@@ -18,3 +18,4 @@ ADD COLUMN IF NOT EXISTS bio TEXT;
 -- Add index on date_of_birth for age calculations
 CREATE INDEX IF NOT EXISTS idx_profiles_date_of_birth ON profiles(date_of_birth);
 
+

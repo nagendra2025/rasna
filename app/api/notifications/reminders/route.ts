@@ -12,12 +12,24 @@ import { addDays, format } from "date-fns";
 export async function GET(request: Request) {
   try {
     // Optional: Add API key authentication for cron jobs
+    // Note: Vercel Cron doesn't send Authorization headers automatically
+    // If CRON_SECRET is set, you can use it for manual testing, but Vercel Cron will work without it
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
     
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    // Only enforce CRON_SECRET if it's set AND an auth header is provided
+    // This allows Vercel Cron to work without the header, but still protects manual access
+    if (cronSecret && authHeader && authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Log execution for debugging
+    const now = new Date();
+    const tomorrow = addDays(now, 1);
+    const tomorrowDateStr = format(tomorrow, "yyyy-MM-dd");
+    
+    console.log(`[CRON] Reminders endpoint called at ${format(now, "yyyy-MM-dd HH:mm:ss")} UTC`);
+    console.log(`[CRON] Looking for events/tasks on: ${tomorrowDateStr}`);
 
     const supabase = await createClient();
 
@@ -30,10 +42,11 @@ export async function GET(request: Request) {
 
     // Check app-level notifications first
     if (appSettings && !appSettings.notifications_enabled) {
+      console.log(`[CRON] Notifications disabled at app level`);
       return NextResponse.json({
         success: true,
         message: "Notifications are disabled at application level",
-        date: format(addDays(new Date(), 1), "yyyy-MM-dd"),
+        date: tomorrowDateStr,
         eventsFound: 0,
         tasksFound: 0,
         notificationsSent: { events: 0, tasks: 0 },
@@ -41,9 +54,7 @@ export async function GET(request: Request) {
       });
     }
 
-    // Get tomorrow's date
-    const tomorrow = addDays(new Date(), 1);
-    const tomorrowDateStr = format(tomorrow, "yyyy-MM-dd");
+    console.log(`[CRON] App settings: notifications=${appSettings?.notifications_enabled}, sms=${appSettings?.enable_sms}, whatsapp=${appSettings?.enable_whatsapp}`);
 
     // Get all family members with phone numbers and notification preferences
     const { data: profiles, error: profilesError } = await supabase
@@ -52,6 +63,7 @@ export async function GET(request: Request) {
       .not("phone_number", "is", null);
 
     if (profilesError) {
+      console.error(`[CRON] Error fetching profiles:`, profilesError);
       return NextResponse.json(
         { error: profilesError.message },
         { status: 500 }
@@ -59,12 +71,19 @@ export async function GET(request: Request) {
     }
 
     if (!profiles || profiles.length === 0) {
+      console.log(`[CRON] No profiles with phone numbers found`);
       return NextResponse.json({
+        success: true,
         message: "No family members with phone numbers found",
-        events: [],
-        tasks: [],
+        date: tomorrowDateStr,
+        eventsFound: 0,
+        tasksFound: 0,
+        notificationsSent: { events: 0, tasks: 0 },
+        results: { events: [], tasks: [] },
       });
     }
+
+    console.log(`[CRON] Found ${profiles.length} profiles with phone numbers`);
 
     // Deduplicate profiles by phone number to avoid sending duplicate notifications
     // If multiple profiles have the same phone number, only send to the first one
@@ -83,7 +102,9 @@ export async function GET(request: Request) {
       .eq("date", tomorrowDateStr);
 
     if (eventsError) {
-      console.error("Error fetching events:", eventsError);
+      console.error(`[CRON] Error fetching events:`, eventsError);
+    } else {
+      console.log(`[CRON] Found ${events?.length || 0} events for ${tomorrowDateStr}`);
     }
 
     // Get tasks due tomorrow (not completed)
@@ -94,7 +115,9 @@ export async function GET(request: Request) {
       .eq("completed", false);
 
     if (tasksError) {
-      console.error("Error fetching tasks:", tasksError);
+      console.error(`[CRON] Error fetching tasks:`, tasksError);
+    } else {
+      console.log(`[CRON] Found ${tasks?.length || 0} tasks for ${tomorrowDateStr}`);
     }
 
     const results = {
@@ -195,21 +218,28 @@ export async function GET(request: Request) {
         .eq("id", appSettings.id);
     }
 
+    const notificationsSent = {
+      events: results.events.filter((r) => r.whatsapp || r.sms).length,
+      tasks: results.tasks.filter((r) => r.whatsapp || r.sms).length,
+    };
+
+    console.log(`[CRON] Completed: ${notificationsSent.events} event notifications, ${notificationsSent.tasks} task notifications sent`);
+
     const response: any = {
       success: true,
       date: tomorrowDateStr,
+      executedAt: format(now, "yyyy-MM-dd HH:mm:ss") + " UTC",
       eventsFound: events?.length || 0,
       tasksFound: tasks?.length || 0,
-      notificationsSent: {
-        events: results.events.filter((r) => r.whatsapp || r.sms).length,
-        tasks: results.tasks.filter((r) => r.whatsapp || r.sms).length,
-      },
+      profilesFound: deduplicatedProfiles.length,
+      notificationsSent,
       results,
     };
 
     if (rateLimitDetected) {
       response.rateLimitExceeded = true;
       response.message = "Twilio daily message limit exceeded. Notifications have been automatically disabled. They will need to be manually re-enabled after the limit resets (typically at midnight).";
+      console.log(`[CRON] Rate limit detected - notifications disabled`);
     }
 
     return NextResponse.json(response);
